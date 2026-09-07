@@ -125,19 +125,6 @@ Contains the repository interfaces used for data persistence with Spring Data JP
 
 ## 🌐 API
 
-### Find Worker by ID
-
-```http
-GET /workers/{id}
-```
-
-Returns a worker based on their ID.
-
-Example:
-
-```http
-GET /workers/1
-```
 
 ### Calculate Worker Income
 
