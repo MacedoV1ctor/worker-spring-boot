@@ -1,136 +1,176 @@
 # Worker API
 
-REST API developed with Java and Spring Boot for managing workers, departments and hourly contracts.
+REST API developed with **Java and Spring Boot** for managing workers, departments and hour contracts.
 
-This project is a Spring Boot adaptation of the Worker domain model proposed in a DevSuperior exercise, originally focused on practicing object composition and object-oriented programming concepts.
+This project is a **Spring Boot adaptation** of the object-oriented programming exercise proposed by DevSuperior, originally developed as a console application. The objective was to apply the same domain model in a REST API using Spring Boot, JPA and an in-memory database.
 
-## About the Project
+## 🚀 Technologies
 
-The application represents a simple worker management system.
+* **Java 25**
+* **Spring Boot 4.1.1**
+* **Spring Web MVC**
+* **Spring Data JPA**
+* **Hibernate**
+* **H2 Database**
+* **Maven**
 
-A worker belongs to a department and can have multiple hourly contracts. The API allows these domain objects to be persisted and queried through a REST interface.
+## 📚 Project Objective
 
-The original exercise focuses on concepts such as:
+The project represents a company structure where:
 
-- Object-oriented programming
-- Object composition
-- Encapsulation
-- Enumerations
-- Domain modeling
-- Business rules
-- Java Date and Time API
+* A `Worker` belongs to a `Department`
+* A `Worker` can have multiple `HourContract`
+* Each contract contains:
 
-In this version, these concepts were adapted to a Spring Boot application with persistence and REST endpoints.
+  * Date
+  * Value per hour
+  * Number of hours
+* The worker's income can be calculated based on the contracts performed in a specific month and year.
 
-## Domain Model
+The project also applies concepts such as:
 
-The main entities of the application are:
+* Object-oriented programming
+* Object composition
+* Encapsulation
+* Enumerations
+* JPA entity mapping
+* REST API development
+* Repository pattern
+* Date and time API with `LocalDate`
+
+## 🏗️ Domain Model
 
 ```text
 Department
     │
+    │ 1
     │
-    └── Worker
-          │
-          └── HourContract
+    │ *
+Worker
+    │
+    │ 1
+    │
+    │ *
+HourContract
 ```
 
 ### Worker
 
-Represents a worker and contains:
+A worker contains:
 
-- Name
-- Level
-- Base salary
-- Department
-- Hourly contracts
+* Id
+* Name
+* Level
+* Base salary
+* Department
+* Hour contracts
+
+The worker level is represented by an enumeration:
+
+```java
+public enum WorkerLevel {
+    JUNIOR,
+    MID_LEVEL,
+    SENIOR
+}
+```
 
 ### Department
 
-Represents the department where the worker works.
+Represents the department to which the worker belongs.
 
 ### HourContract
 
-Represents an hourly contract containing:
+Represents a contract performed by a worker, containing:
 
-- Date
-- Value per hour
-- Number of hours
+* Date
+* Value per hour
+* Duration in hours
 
-### WorkerLevel
+The contract also provides the total value of the contract.
 
-Defines the worker's professional level:
-
-```text
-JUNIOR
-MID_LEVEL
-SENIOR
-```
-
-## Technologies
-
-- Java 25
-- Spring Boot 4
-- Spring Web MVC
-- Spring Data JPA
-- Hibernate
-- H2 Database
-- Maven
-
-## Project Structure
+## 📂 Project Structure
 
 ```text
-src/main/java/com/victor/worker
-│
-├── config
-│
-├── controller
-│
-├── dto
-│
-├── entities
-│
-├── repositories
-│
-└── WorkerApplication.java
+src
+└── main
+    ├── java
+    │   └── com.victor.worker
+    │       ├── config
+    │       ├── controller
+    │       ├── dto
+    │       ├── entities
+    │       ├── repositories
+    │       └── WorkerApplication.java
+    │
+    └── resources
 ```
 
-### Layers
+### Main packages
 
-**Controller**
+**`config`**
+Contains application configuration and database initialization.
 
-Responsible for receiving HTTP requests and returning API responses.
+**`controller`**
+Contains the REST controllers responsible for handling HTTP requests.
 
-**DTO**
+**`dto`**
+Contains Data Transfer Objects used to transfer data through the API.
 
-Used to represent data transferred through the API.
+**`entities`**
+Contains the domain entities mapped with JPA.
 
-**Entities**
+**`repositories`**
+Contains the repository interfaces used for data persistence with Spring Data JPA.
 
-Contains the main domain objects of the application.
+## 🌐 API
 
-**Repositories**
+### Find Worker by ID
 
-Responsible for database access using Spring Data JPA.
+```http
+GET /workers/{id}
+```
 
-**Config**
+Returns a worker based on their ID.
 
-Contains application configuration and initial data setup.
+Example:
 
-## Database
+```http
+GET /workers/1
+```
 
-The project uses an H2 database for development and testing purposes.
+### Calculate Worker Income
 
-H2 allows the application to run without requiring an external database server.
+```http
+GET /workers/{id}/income/{year}/{month}
+```
 
-## Running the Project
+Calculates the worker's income for a specific month and year, considering the worker's base salary and the contracts performed during that period.
+
+Example:
+
+```http
+GET /workers/1/income/2018/8
+```
+
+In this example, the API calculates the income of worker `1` for **August 2018**.
+
+## 🗄️ Database
+
+The project uses **H2 Database** as an in-memory database for development and testing.
+
+The application also uses **JPA/Hibernate** for object-relational mapping between the Java entities and the database.
+
+The database can be initialized with sample data through the project's configuration.
+
+## ▶️ How to Run
 
 ### Requirements
 
-Before running the application, make sure you have installed:
+Before running the project, make sure you have installed:
 
-- Java 25+
-- Maven (optional, because the project includes Maven Wrapper)
+* Java 25
+* Maven (optional, since the project includes the Maven Wrapper)
 
 ### Clone the repository
 
@@ -138,7 +178,7 @@ Before running the application, make sure you have installed:
 git clone https://github.com/MacedoV1ctor/worker-spring-boot.git
 ```
 
-### Enter the project directory
+Enter the project directory:
 
 ```bash
 cd worker-spring-boot
@@ -146,111 +186,78 @@ cd worker-spring-boot
 
 ### Run with Maven Wrapper
 
-Windows:
+On Windows:
 
 ```bash
-.\mvnw.cmd spring-boot:run
+mvnw.cmd spring-boot:run
 ```
 
-Linux/macOS:
+Or, if Maven is installed:
 
 ```bash
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
-The application will start on:
+The application will start using the configured Spring Boot server.
 
-```text
-http://localhost:8080
-```
+## 🧪 H2 Database
 
-## API
+During development, the application uses H2 as an in-memory database.
 
-The application provides REST endpoints for querying worker data.
+The H2 database is useful for testing the application's persistence layer without requiring an external database server.
 
-Example:
+## 📖 Original Exercise
 
-```http
-GET /workers/{id}
-```
+This project was based on the following DevSuperior exercise:
 
-Example request:
+**Preparando para o Spring: composição de objetos com Java - exercício resolvido**
 
-```http
-GET /workers/1
-```
+The original exercise focuses on object composition, enums, encapsulation, date/time manipulation and business rules involving workers and hour contracts.
 
-The response contains information about the worker and its associated department and contracts.
+Original exercise:
 
-## Example
+https://devsuperior.com.br/blog/preparando-para-o-spring-composicao-de-objetos-com-java-exercicio-resolvido
 
-A worker can be associated with:
+The original exercise was developed as a console application. This repository adapts the same domain model to a REST API using Spring Boot, JPA and H2.
 
-```text
-Worker
-├── Department
-│   └── Design
-│
-└── Contracts
-    ├── Contract 1
-    ├── Contract 2
-    └── Contract 3
-```
+## 🎯 What I Learned
 
-The original business rule calculates the worker's income for a given month by adding the base salary to the value of contracts belonging to that month.
+Through this project, I practiced:
 
-For example:
+* Java object-oriented programming
+* Entity relationships
+* `@Entity`, `@Id` and `@GeneratedValue`
+* `@ManyToOne` and `@OneToMany`
+* Spring Boot
+* REST controllers
+* `@GetMapping`
+* `@PathVariable`
+* DTOs
+* Spring Data JPA repositories
+* JPA/Hibernate persistence
+* H2 database
+* Maven
+* Layered project organization
+* Git and GitHub
 
-```text
-Base salary:        1200.00
-Contract 1:         1000.00
-Contract 2:          800.00
---------------------------------
-Monthly income:     3000.00
-```
-
-## What I Learned
-
-This project helped me practice and understand:
-
-- Object-oriented programming
-- Object composition
-- Java enumerations
-- Encapsulation
-- Domain modeling
-- REST APIs
-- Spring Boot
-- Spring Data JPA
-- Entity relationships
-- DTOs
-- Repository pattern
-- Database persistence
-- H2 database
-- Maven
-
-## Future Improvements
+## 🔮 Future Improvements
 
 Possible improvements for future versions:
 
-- [ ] Add complete CRUD operations
-- [ ] Add validation with Bean Validation
-- [ ] Add global exception handling
-- [ ] Improve DTO structure
-- [ ] Add unit and integration tests
-- [ ] Add Swagger/OpenAPI documentation
-- [ ] Replace H2 with PostgreSQL
-- [ ] Add Docker support
+* Add `POST`, `PUT` and `DELETE` operations
+* Add request validation with Bean Validation
+* Implement global exception handling with `@ControllerAdvice`
+* Add pagination
+* Add automated tests with JUnit and Mockito
+* Add API documentation with Swagger/OpenAPI
+* Replace H2 with PostgreSQL
+* Add Docker support
+* Improve DTO mapping and service layer organization
 
-## Reference
+## 👨‍💻 Author
 
-This project was inspired by the DevSuperior exercise:
+**Victor Hugo**
 
-[Preparando para o Spring: composição de objetos com Java](https://devsuperior.com.br/blog/preparando-para-o-spring-composicao-de-objetos-com-java-exercicio-resolvido)
+GitHub:
 
-The original exercise was created to practice object composition and object-oriented programming fundamentals before working with Spring.
-
-## Author
-
-Victor Macedo
-
-GitHub: https://github.com/MacedoV1ctor
+https://github.com/MacedoV1ctor
